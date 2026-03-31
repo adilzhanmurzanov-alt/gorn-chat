@@ -112,8 +112,11 @@ export default function App() {
         sender_name: user.name,
         sender_id: user.id,
       });
-      // Optimistically add the message
-      setMessages((prev) => [...prev, event]);
+      // Add message only if not already delivered via WebSocket
+      setMessages((prev) => {
+        if (prev.find((m) => m.id === event.id)) return prev;
+        return [...prev, event];
+      });
       lastEventIdRef.current = event.id;
     } catch (err) {
       console.error('Failed to send message:', err);
