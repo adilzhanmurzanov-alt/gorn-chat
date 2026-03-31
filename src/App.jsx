@@ -6,6 +6,11 @@ import Sidebar from './components/Sidebar';
 import ChatView from './components/ChatView';
 import EmptyState from './components/EmptyState';
 
+const DEFAULT_CHANNEL = {
+  id: '22bb325a-ab3b-4911-833a-a529a34542ae',
+  name: 'lobby',
+};
+
 export default function App() {
   const [user, setUserState] = useState(getUser);
   const [channels, setChannels] = useState(getKnownChannels);
@@ -18,6 +23,12 @@ export default function App() {
   const wsRef = useRef(null);
   const pollRef = useRef(null);
   const lastEventIdRef = useRef(null);
+
+  // Ensure lobby channel is in known channels on mount
+  useEffect(() => {
+    addKnownChannel(DEFAULT_CHANNEL);
+    setChannels(getKnownChannels());
+  }, []);
 
   // Save user
   const handleSetUser = (name) => {
